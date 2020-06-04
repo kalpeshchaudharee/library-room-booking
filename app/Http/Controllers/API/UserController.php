@@ -35,7 +35,7 @@ class UserController extends Controller
             return response()->json(['status' => 401, 'error' => 'Unauthorised'], 401);
         }catch (\Exception $e) {
             return response()->json(['status' => 500, 'error' => 'Internal_Server_Error'], 500);
-        } 
+        }
     }
 
      public function forgotPassword(Request $request) {

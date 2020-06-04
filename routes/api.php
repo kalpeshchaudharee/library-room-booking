@@ -22,5 +22,7 @@ Route::post('login', 'API\UserController@login');
 Route::post('forgot_password', 'API\UserController@forgotPassword');
 Route::post('reset_password', 'API\UserController@resetPassword');
 Route::group(['middleware' => 'auth:api'], function(){
-Route::post('details', 'API\UserController@details');
+    Route::get('rooms', 'API\RoomController@roomList');
+    Route::get('room/{id}', 'API\RoomController@roomDetails');
+    Route::post('room/booking/{roomId}', 'API\BookingController@createBooking');
 });
