@@ -25,4 +25,5 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('rooms', 'API\RoomController@roomList');
     Route::get('room/{id}', 'API\RoomController@roomDetails');
     Route::post('room/booking/{roomId}', 'API\BookingController@createBooking');
+    Route::get('bookings', 'API\BookingController@bookingList');
 });

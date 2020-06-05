@@ -14,21 +14,21 @@ class RoomSeeder extends Seeder
     {
         DB::table('rooms')->insert(
             [
-                'name' => 'room 1',
+                'room_name' => 'room 1',
                 'description' => 'In left side of library',
                 'status' => 'Available',
             ]
         );
         DB::table('rooms')->insert(
             [
-                'name' => 'room 2',
+                'room_name' => 'room 2',
                 'description' => 'In right side of library',
                 'status' => 'Available',
             ]
         );
         DB::table('rooms')->insert(
             [
-                'name' => 'room 3',
+                'room_name' => 'room 3',
                 'description' => 'In opposite side of library',
                 'status' => 'Available',
             ]

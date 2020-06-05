@@ -31,6 +31,10 @@ class RoomController extends Controller
                 ->leftJoin('users', 'bookings.user_id', '=', 'users.id')
                 ->get();
 
+                foreach($bookings as $booking) {
+                    unset($booking->password);
+                }
+
                 $success['status'] = 200;
                 $success['data'] = $bookings;
                 return response()->json(['success' => $success], 200);

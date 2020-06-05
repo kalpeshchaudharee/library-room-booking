@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Booking;
 use App\User;
@@ -35,8 +36,10 @@ class BookingController extends Controller
             
             if($room) {
                 $checkUserBooking = Booking::where('user_id', $user->id)->latest('end_time')->first();
-                if(strtotime(date('Y/m/d h:i:s', strtotime($input['start_time']))) < strtotime("+4 hours" ,strtotime($checkUserBooking->end_time))) {
-                    return response()->json(['status' => 400, 'error' => 'Room can be booked after 4 hours of previous booking'], 400);
+                if($checkUserBooking) {
+                    if(strtotime(date('Y/m/d h:i:s', strtotime($input['start_time']))) < strtotime("+4 hours" ,strtotime($checkUserBooking->end_time))) {
+                        return response()->json(['status' => 400, 'error' => 'Room can be booked after 4 hours of previous booking'], 400);
+                    }
                 }
 
                 $checkBooking = Booking::where('room_id', $room->id)->whereBetween('start_time', [date('Y/m/d', time()).' 00:00:00', date('Y/m/d', time()).' 23:59:50'])->get();
@@ -59,6 +62,25 @@ class BookingController extends Controller
                 return response()->json(['success' => $success], 200);
             }
             return response()->json(['status' => 404, 'error' => 'Room_Not_Found'], 404);
+        }catch (\Exception $e) {
+            return response()->json(['status' => 500, 'error' => 'Internal_Server_Error'], 500);
+        }
+    }
+    
+    public function bookingList() {
+        try{
+            $bookings = DB::table('bookings')
+            ->leftJoin('users', 'bookings.user_id', '=', 'users.id')
+            ->leftJoin('rooms', 'bookings.room_id', '=', 'rooms.id')
+            ->get();
+
+            foreach($bookings as $booking) {
+                unset($booking->password);
+            }
+
+            $success['status'] = 200;
+            $success['data'] = $bookings;
+            return response()->json(['success' => $success], 200);
         }catch (\Exception $e) {
             return response()->json(['status' => 500, 'error' => 'Internal_Server_Error'], 500);
         }

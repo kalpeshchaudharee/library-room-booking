@@ -104,12 +104,12 @@ class UserController extends Controller
             $otp = OTP::where('code', $input['otp'])->first();
             if ($otp) {
                 if($otp->status !== "Active") {
-                    return response()->json(['status' => 401, 'error' => 'Invalid_Token'], 401);
+                    return response()->json(['status' => 401, 'error' => 'Invalid_OTP'], 401);
                 }
-                
-                if (time() > strtotime($otp->expire)) {
+
+                if (time() < strtotime($otp->expire)) {
                     $otp->status = "Expired";
-                    return response()->json(['status' => 401, 'error' => 'Token_Expired'], 401);
+                    return response()->json(['status' => 401, 'error' => 'OTP_Expired'], 401);
                 }
                 
                 $otp->status = "Verified";
@@ -124,7 +124,7 @@ class UserController extends Controller
                 $success['user'] = $user;
                 return response()->json(['success' => $success], $this->successStatus);
             }                
-            return response()->json(['status' => 401, 'error' => 'Invalid_Token'], 401);
+            return response()->json(['status' => 401, 'error' => 'Invalid_OTP'], 401);
         } catch (\Exception $e) {
             return response()->json(['status' => 500, 'error' => 'Internal_Server_Error'], 500);
         }
